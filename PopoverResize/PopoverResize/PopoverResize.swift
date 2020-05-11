@@ -24,7 +24,7 @@ public class PopoverResize: NSPopover {
     
     private var min: NSSize
     private var max: NSSize
-    private var bottomHeight = CGFloat(20)
+    private var bottomHeight = CGFloat(10)
     private var region: Region = .None
     private var down: NSPoint?
     private var size: NSSize?
@@ -118,15 +118,27 @@ public class PopoverResize: NSPopover {
         self.size = contentSize
         self.down = NSEvent.mouseLocation
         
+        switch region {
+            case .Left: fallthrough
+            case .Right:fallthrough
+            case .LeftBottom: fallthrough
+            case .RightBottom:fallthrough
+            case .Bottom:
+                ()
+            default:
+                super.mouseDown(with: event)
+        }
+        
 //        print("REGION: \(String(describing: region))")
 //        print("DOWN: \(String(describing: down))")
 //        print("SIZE: \(String(describing: self.contentSize))")
+//        super.mouseDown(with: event)
     }
     
     override public func mouseDragged(with event: NSEvent) {
-        if region == .None {
-            return
-        }
+//        if region == .None {
+//            return
+//        }
 
         guard let size = size else { return }
         guard let down = down else { return }
@@ -165,10 +177,11 @@ public class PopoverResize: NSPopover {
             case .Bottom:
                 contentSize = NSSize(width: contentSize.width, height: newHeight)
             default:
-                ()
+                super.mouseDragged(with: event)
         }
         
         setCursor()
+        
     }
     
     override public func mouseUp(with event: NSEvent) {
